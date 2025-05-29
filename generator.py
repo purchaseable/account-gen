@@ -40,8 +40,11 @@ async def create_account(email, proxy, niche):
     timestamp = datetime.now().isoformat()
 
     try:
-        async with async_playwright() as p:
-            browser = await p.chromium.launch(proxy={"server": proxy}, headless=True)
+      async with async_playwright() as p:
+    if proxy:
+        browser = await p.chromium.launch(proxy={"server": proxy}, headless=True)
+    else:
+        browser = await p.chromium.launch(headless=True)
             context = await browser.new_context()
             page = await context.new_page()
 
