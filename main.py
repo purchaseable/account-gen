@@ -19,7 +19,7 @@ async def create_account_endpoint(request: Request):
     data = await request.json()
     result = await create_account(
         email=data["email"],
-        proxy=data["proxy"],
+        proxy=data.get("proxy", ""),
         niche=data["niche"]
     )
     return result
