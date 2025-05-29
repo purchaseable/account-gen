@@ -39,35 +39,31 @@ async def create_account(email, proxy, niche):
     password = generate_password()
     timestamp = datetime.now().isoformat()
 
-    try:
-async with async_playwright() as p:
-    if proxy:
-        browser = await p.chromium.launch(proxy={"server": proxy}, headless=True)
-    else:
-        browser = await p.chromium.launch(headless=True)
+try:
+    async with async_playwright() as p:
+        if proxy:
+            browser = await p.chromium.launch(proxy={"server": proxy}, headless=True)
+        else:
+            browser = await p.chromium.launch(headless=True)
 
-    context = await browser.new_context()
-    page = await context.new_page()
-    
-    # Continue automation here...
+        context = await browser.new_context()
+        page = await context.new_page()
 
+        await page.goto("https://example.com/signup")  # replace with real URL
 
-            await page.goto("https://example.com/signup")  # Replace with real signup URL
+        await page.fill('input[name="email"]', email)
+        await page.fill('input[name="username"]', username)
+        await page.fill('input[name="name"]', name)
+        await page.fill('input[name="birthdate"]', birthdate)
+        await page.fill('input[name="password"]', password)
+        await page.click('button[type="submit"]')
 
-            # Simulate filling the form
-            await page.fill('input[name="email"]', email)
-            await page.fill('input[name="username"]', username)
-            await page.fill('input[name="name"]', name)
-            await page.fill('input[name="birthdate"]', birthdate)
-            await page.fill('input[name="password"]', password)
-            await page.click('button[type="submit"]')
+        await browser.close()
 
-            await browser.close()
+    status = "success"
 
-        status = "success"
-
-    except Exception as e:
-        status = f"failed: {str(e)}"
+except Exception as e:
+    status = f"failed: {str(e)}"
 
     # Save to CSV
     with open("accounts.csv", "a", newline="") as file:
